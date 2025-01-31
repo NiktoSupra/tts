@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>TTS Generator</title>
+    <style>
+        body { font-family: Arial; max-width: 600px; margin: 20px auto; }
+        #text { width: 100%; height: 100px; }
+        button { margin: 10px 5px; padding: 10px; }
+        audio { margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <h2>Озвучення тексту</h2>
+    <textarea id="text" placeholder="Введіть текст..."></textarea>
+    <br>
+    <button onclick="generateAudio()">Озвучити</button>
+    <button onclick="clearText()">Стерти</button>
+    <br>
+    <audio id="audioPlayer" controls></audio>
+
+    <script>
+        async function generateAudio() {
+            const text = document.getElementById('text').value;
+            const response = await fetch('ВАШ_NGROK_URL/generate_audio', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: `text=${encodeURIComponent(text)}`
+            });
+            
+            const audioBlob = await response.blob();
+            const audioUrl = URL.createObjectURL(audioBlob);
+            document.getElementById('audioPlayer').src = audioUrl;
+        }
+
+        function clearText() {
+            document.getElementById('text').value = '';
+        }
+    </script>
+</body>
+</html>
