@@ -20,17 +20,31 @@
 
     <script>
         async function generateAudio() {
-            const text = document.getElementById('text').value;
-            const response = await fetch('https://eafb-35-247-105-69.ngrok-free.app/generate_audio', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: `text=${encodeURIComponent(text)}`
-            });
-            
-            const audioBlob = await response.blob();
-            const audioUrl = URL.createObjectURL(audioBlob);
-            document.getElementById('audioPlayer').src = audioUrl;
+    try {
+        const text = document.getElementById('text').value;
+        if (!text) {
+            alert("Введіть текст!");
+            return;
         }
+
+        const response = await fetch('https://8478-35-247-105-69.ngrok-free.app/generate_audio', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: `text=${encodeURIComponent(text)}`
+        });
+
+        if (!response.ok) {
+            throw new Error(`Помилка сервера: ${response.status}`);
+        }
+
+        const audioBlob = await response.blob();
+        const audioUrl = URL.createObjectURL(audioBlob);
+        document.getElementById('audioPlayer').src = audioUrl;
+    } catch (error) {
+        console.error("Помилка:", error);
+        alert("Щось пішло не так. Перевірте консоль для деталей.");
+    }
+}
 
         function clearText() {
             document.getElementById('text').value = '';
